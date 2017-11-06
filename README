@@ -14,3 +14,24 @@ Python 2.7.0
 3. To install with Python 3.x:
 
   $ sudo python3 setup.py install
+
+Example:
+
+# FTNTLIB Install process on a Ubuntu Desktop
+
+$ tar xzvf ftntlib-VERSION.tgz
+ftntlib-VERSION/
+ftntlib-VERSION/ftntlib/
+ftntlib-VERSION/ftntlib/__init__.py
+ftntlib-VERSION/ftntlib/fmg_jsonapi.py
+ftntlib-VERSION/ftntlib/fmg_xmlapi.py
+ftntlib-VERSION/ftntlib/fos_restapi.py
+ftntlib-VERSION/README
+ftntlib-VERSION/setup.py
+$ cd ftntlib-VERSION
+$ sudo apt install python-setuptools
+$ sudo apt install gcc
+$ sudo apt install python-dev
+$ sudo apt install libxslt1-dev
+$ sudo apt install zlib1g-dev
+$ sudo python setup.py install

@@ -93,16 +93,14 @@ class FortiOSREST(object):
                 csrftoken = cookie.value[1:-1] # token stored as a list
                 self._session.headers.update({'X-CSRFTOKEN': csrftoken})
 
-    def login(self,host,username,password):
+    def login(self,host,username,password, timeout=None):
         self.host = host
         if self._https is True:
             self.url_prefix = 'https://' + self.host
         else:
             self.url_prefix = 'http://' + self.host
         url = self.url_prefix + '/logincheck'
-        res = self._session.post(url,
-                                data='username='+username+'&secretkey='+password,
-                                verify = False)
+        res = self._session.post(url, data='username='+username+'&secretkey='+password, verify = False, timeout=timeout)
         self.dprint(res)
 
         # Update session's csrftoken

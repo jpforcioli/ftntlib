@@ -12,8 +12,13 @@ import time
 import logging
 import requests
 import json
+import sys
 
-logging.captureWarnings(True)
+if sys.version_info >= (2,7):
+    logging.captureWarnings(True)
+else:
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings()
 
 class FortiManagerJSON (object):
     
@@ -27,7 +32,7 @@ class FortiManagerJSON (object):
         self._ws_mode = False
         self._params = False
         self._skip = False
-        self._verbose = False   
+        self._verbose = False
         self._root = False
         self._rootpath = None
         self._timeout = None
@@ -105,7 +110,6 @@ class FortiManagerJSON (object):
             self.ws_mode = False                        
         else:
             pass # to do: warn  
-
 
     def http_request (self,method,params):
         headers = { 'content-type' : 'application/json' }
@@ -218,6 +222,37 @@ class FortiManagerJSON (object):
     def do (self,method,params):
         status, response = self.http_request(method,params)
         return status, response
+
+    def baredo (self, datagram):
+        headers = { 'content-type' : 'application/json' }
+
+        if self._skip is not False:
+            datagram['skip'] = int(self._skip)
+        if self._verbose:
+            datagram['verbose'] = int(self._verbose)
+        if self._root:
+            datagram['root'] = self._rootpath
+            
+        self.dprint('REQUEST:',datagram)
+
+        try: 
+            response = requests.post(
+                                     self._url, 
+                                     data=json.dumps(datagram), 
+                                     headers=headers,
+                                     verify=self._ssl_verify, 
+                                     timeout=self._timeout
+                                     )
+            response = response.json()
+        except requests.exceptions.ConnectionError as cerr:
+            print ('Connection ERROR: ', cerr)
+            return cerr
+        except Exception as err:
+            print ('ERROR: ', err)
+            return err
+        assert response['id'] == datagram['id']
+        self.dprint('RESPONSE:',response)
+        return self.response(response) 
             
     def get (self,url,data={}):
         if data:
