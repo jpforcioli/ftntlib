@@ -1,4 +1,5 @@
 from .fmg_jsonapi import FortiManagerJSON
+from .faz_jsonapi import FortiAnalyzerJSON
 from .fmg_xmlapi import FortiManagerXML
 from .fos_restapi import FortiOSREST
-from .faz_jsonapi import FortiAnalyzerJSON
+from .fpc_restapi import FortiPortalREST
