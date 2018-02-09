@@ -116,7 +116,8 @@ class FortiManagerJSON (object):
         if self._params:
             params[0].update(self._params)
             self._params = False
-        datagram = { 'id' : self._reqid, 
+        datagram = { 'id' : self._reqid,
+                     'jsonrpc': "1.0",
                      'session' : self._sid,
                      'method' : method,
                      'params' : params,
@@ -283,6 +284,13 @@ class FortiManagerJSON (object):
             params[0]['data'] = data
         status, response = self.http_request('set',params)
         return status, response
+
+    def unset (self,url,data={}):
+        params = [{ 'url' : url }]
+        if data:
+            params[0]['data'] = data
+        status, response = self.http_request('unset',params)
+        return status, response    
     
     def delete (self,url,data={}):
         params = [{ 'url' : url }]
