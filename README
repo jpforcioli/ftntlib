@@ -35,3 +35,19 @@ $ sudo apt install python-dev
 $ sudo apt install libxslt1-dev
 $ sudo apt install zlib1g-dev
 $ sudo python setup.py install
+
+WINDOWS 10 INSTALLTION
+
+1. Download Python for Windows https://www.python.org/ftp/python/2.7.14/python-2.7.14.amd64.msi
+2. Run the installer
+3. Open Windows Shell (cmd.exe)
+4. Download ftntlib and extract it somewhere
+5. Microsoft C++ Compiler 9.0 for Python is required (VCForPython27.msi)
+6. Install the compiler
+9. Get LXML and XSLT from here: https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+lxml‑4.2.1‑cp27‑cp27m‑win_amd64.whl
+pip instal llxml‑4.2.1‑cp27‑cp27m‑win_amd64.whl
+
+8. cd ftntlib folder
+
+python setup.py install

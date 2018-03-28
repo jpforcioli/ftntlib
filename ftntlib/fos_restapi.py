@@ -18,6 +18,7 @@ class FortiOSREST(object):
         self._http_debug = False
         self._https = True
         self._session = requests.session() # use single session for all requests
+        self._auth_token = None
 
     def jprint(self,json_obj):
         return json.dumps(json_obj, indent=2, sort_keys=True)
@@ -93,24 +94,34 @@ class FortiOSREST(object):
                 csrftoken = cookie.value[1:-1] # token stored as a list
                 self._session.headers.update({'X-CSRFTOKEN': csrftoken})
 
-    def login(self,host,username,password, timeout=None):
+    def login(self,host,username,password, timeout=None, token=None):
         self.host = host
         if self._https is True:
             self.url_prefix = 'https://' + self.host
         else:
             self.url_prefix = 'http://' + self.host
-        url = self.url_prefix + '/logincheck'
-        res = self._session.post(url, data='username='+username+'&secretkey='+password, verify = False, timeout=timeout)
-        self.dprint(res)
 
-        # Update session's csrftoken
-        self.update_csrf()
+        if token:
+            self._auth_token = token
+            self._session.headers.update({'Authorization': 'Bearer {}'.format(self._token)})
+            if self._debug:
+                print("Using Token-based Authentication: login OK")
+        else:
+            url = self.url_prefix + '/logincheck'
+            res = self._session.post(url, data='username='+username+'&secretkey='+password, verify = False, timeout=timeout)
+            self.dprint(res)
+
+            # Update session's csrftoken
+            self.update_csrf()
 
     def logout(self):
-        url = self.url_prefix + '/logout'
-        res = self._session.post(url)
+        if self._token:
+            print("Using Token-based Authentication: logout OK")
+        else:
+            url = self.url_prefix + '/logout'
+            res = self._session.post(url)
 
-        self.dprint(res)
+            self.dprint(res)
 
     def get_url(self, api, path, name, action, mkey):
         # Check for valid api
