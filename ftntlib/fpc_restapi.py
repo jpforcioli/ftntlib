@@ -67,10 +67,10 @@ class FortiPortalREST:
             # Print the request:
             method = response.request.method
             url = response.request.url
-            print "==> REQUEST:\n\n{} {}".format(method, url)
+            print("==> REQUEST:\n\n{} {}".format(method, url))
             for key in response.request.headers:
                 value = response.request.headers[key]
-                print "{}: {}".format(key, value)
+                print("{}: {}".format(key, value))
 
             body_request = response.request.body
 
@@ -78,23 +78,23 @@ class FortiPortalREST:
                 try:
                     json_object = json.loads(body_request)
                 except ValueError:
-                    print "\n{}".format(body_request)
+                    print("\n{}".format(body_request))
                 else:
-                    print "\n{}".format(json.dumps(json_object, indent=4))
+                    print("\n{}".format(json.dumps(json_object, indent=4)))
 
             # Print the response:
-            print "\n==> RESPONSE: \n"
-            print response.status_code
+            print("\n==> RESPONSE: \n")
+            print(response.status_code)
             for key in response.headers:
                 value = response.headers[key]
-                print "{}: {}".format(key, value)
+                print("{}: {}".format(key, value))
 
             try:
                 json_object = response.json()
             except ValueError:
                 pass
             else:
-                print "\n{}".format(json.dumps(json_object, indent=4))
+                print("\n{}".format(json.dumps(json_object, indent=4)))
         
 if __name__ == '__main__':
 

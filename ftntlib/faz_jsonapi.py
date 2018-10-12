@@ -37,7 +37,7 @@ class FortiAnalyzerJSON (object):
         self._root = False
         self._rootpath = None
         self._timeout = None
-    
+        self._apiver = 3
   
     def jprint (self,json_obj):
         return json.dumps(json_obj, indent=2, sort_keys=True)
@@ -116,6 +116,7 @@ class FortiAnalyzerJSON (object):
         headers = { 'content-type' : 'application/json' }
         if self._params:
             params[0].update(self._params)
+            params[0]['apiver'] = self._apiver
             self._params = False
         datagram = { 'id' : self._reqid,
                      'jsonrpc': "2.0",

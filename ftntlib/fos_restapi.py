@@ -94,34 +94,32 @@ class FortiOSREST(object):
                 csrftoken = cookie.value[1:-1] # token stored as a list
                 self._session.headers.update({'X-CSRFTOKEN': csrftoken})
 
-    def login(self,host,username,password, timeout=None, token=None):
-        self.host = host
+    def url_prefix(self, host):
         if self._https is True:
-            self.url_prefix = 'https://' + self.host
+            self._url_prefix = 'https://' + host
         else:
-            self.url_prefix = 'http://' + self.host
+            self._url_prefix = 'http://' + host
 
-        if token:
-            self._auth_token = token
-            self._session.headers.update({'Authorization': 'Bearer {}'.format(self._token)})
-            if self._debug:
-                print("Using Token-based Authentication: login OK")
-        else:
-            url = self.url_prefix + '/logincheck'
-            res = self._session.post(url, data='username='+username+'&secretkey='+password, verify = False, timeout=timeout)
-            self.dprint(res)
+    def login_token(self, host, token):
+        self._auth_token = token
+        self._session.headers.update({'Authorization': 'Bearer {}'.format(token)})
+        self._session.verify = False
+        self.url_prefix(host)
 
-            # Update session's csrftoken
-            self.update_csrf()
+    def login(self, host, username, password, timeout=None, token=None):
+        self.url_prefix(host)
+        url = self._url_prefix + '/logincheck'
+        res = self._session.post(url, data='username='+username+'&secretkey='+password, verify=False, timeout=timeout)
+        self.dprint(res)
+
+        # Update session's csrftoken
+        self.update_csrf()
 
     def logout(self):
-        if self._token:
-            print("Using Token-based Authentication: logout OK")
-        else:
-            url = self.url_prefix + '/logout'
-            res = self._session.post(url)
+        url = self._url_prefix + '/logout'
+        res = self._session.post(url)
 
-            self.dprint(res)
+        self.dprint(res)
 
     def get_url(self, api, path, name, action, mkey):
         # Check for valid api
@@ -135,7 +133,7 @@ class FortiOSREST(object):
             url_postfix += '/' + action
         if mkey:
             url_postfix = url_postfix + '/' + str(mkey)
-        url = self.url_prefix + url_postfix
+        url = self._url_prefix + url_postfix
         return url
 
     def get_v1(self, api, path, name, action='select'):
@@ -149,7 +147,7 @@ class FortiOSREST(object):
             print('Unknown API {0}. Ignore.'.format(api))
             return
 
-        url = self.url_prefix + url_postfix
+        url = self._url_prefix + url_postfix
         data = {
             'path': path,
             'name':name,
@@ -162,7 +160,7 @@ class FortiOSREST(object):
         return res.content
 
     def get_webui(self, url_postfix, parameters=None):
-        url = self.url_prefix + url_postfix
+        url = self._url_prefix + url_postfix
         res = self._session.get(url,params=parameters)
         self.dprint(res)        
         return res.content    

@@ -28,6 +28,7 @@ class FortiManagerJSON (object):
         self._url = None
         self._ssl_verify = False
         self._debug = False
+        self._http_debug = False        
         self._bbcode = False
         self._ws_mode = False
         self._params = False
@@ -58,6 +59,12 @@ class FortiManagerJSON (object):
             self._debug = True
         if status == 'off':
             self._debug = False
+
+    def http_debug(self, status):
+        if status == 'on':
+          self._http_debug = True
+        if status == 'off':
+          self._http_debug = False            
             
             
     def bbcode (self, status):
@@ -139,16 +146,23 @@ class FortiManagerJSON (object):
                                      verify=self._ssl_verify, 
                                      timeout=self._timeout
                                      )
-            response = response.json()
+            response_json = response.json()
         except requests.exceptions.ConnectionError as cerr:
             print ('Connection ERROR: ', cerr)
             return cerr
         except Exception as err:
             print ('ERROR: ', err)
             return err
-        assert response['id'] == datagram['id']
-        self.dprint('RESPONSE:',response)
-        return self.response(response) 
+        assert response_json['id'] == datagram['id']
+        self.dprint('RESPONSE:',response_json)
+
+        if self._http_debug:
+            print "{}".format(response.status_code)
+            headers = response.request.headers
+            for key, value in headers.iteritems():
+                print(key + ": " + value)
+
+        return self.response(response_json) 
       
     def response (self, response):
         status = { 'code' : 0 }
