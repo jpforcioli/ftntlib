@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 ###################################################################
 #
-# faz_jsonapi.py by Jean-Pierre Forcioli
-# Inspired from fmg_jsonapi.py from Ashton Turpin
+# fmg_jsonapi.py by Ashton Turpin 
 #
-# A Python module to access the FortiAnalyzer JSON API (apiv3) 
+# A Python module to access the FortiManager/FortiAnalyzer JSON API 
 #
 ###################################################################
 
@@ -21,7 +20,7 @@ else:
     from requests.packages.urllib3.exceptions import InsecureRequestWarning
     requests.packages.urllib3.disable_warnings()
 
-class FortiAnalyzerJSON (object):
+class FortiManagerJSON (object):
     
     def __init__ (self):
         self._reqid = 1
@@ -37,7 +36,7 @@ class FortiAnalyzerJSON (object):
         self._root = False
         self._rootpath = None
         self._timeout = None
-        self._apiver = 3
+    
   
     def jprint (self,json_obj):
         return json.dumps(json_obj, indent=2, sort_keys=True)
@@ -117,10 +116,7 @@ class FortiAnalyzerJSON (object):
         if self._params:
             params[0].update(self._params)
             self._params = False
-
-        params[0]['apiver'] = self._apiver
-        datagram = { 'id' : self._reqid,
-                     'jsonrpc': "2.0",
+        datagram = { 'id' : self._reqid, 
                      'session' : self._sid,
                      'method' : method,
                      'params' : params,
@@ -143,7 +139,6 @@ class FortiAnalyzerJSON (object):
                                      timeout=self._timeout
                                      )
             response = response.json()
-
         except requests.exceptions.ConnectionError as cerr:
             print ('Connection ERROR: ', cerr)
             return cerr
@@ -152,19 +147,32 @@ class FortiAnalyzerJSON (object):
             return err
         assert response['id'] == datagram['id']
         self.dprint('RESPONSE:',response)
-
-        return self.response(response)
-
-    def response (self, response):
-        if self._sid == None and 'session' in response:
-            self._sid = response['session']
-
-        result = None
-        if 'result' in response.keys():
-            result = response['result']
-
-        return result
+        return self.response(response) 
       
+    def response (self, response):
+        status = { 'code' : 0 }
+        data = {}
+        try: 
+            if self._sid == None and 'session' in response:
+                self._sid = response['session']
+            result={}
+            if type(response['result']) is list:
+                result = response['result'][0]
+            else:
+                result = response['result']
+            if 'status' in result:
+                status = result['status'] 
+            else:
+                status['message'] = 'Did not receive status from host.'
+            if 'data' in result:
+                data = result['data']
+            return status, data
+        except Exception as e:
+            print ("Response parser error: (%s) %s", type(e), e)
+            status['code'] = 1
+            status['message'] = 'Response parser error'
+            return status, data
+                    
     def login (self, ip, user, passwd, ssl=True):
         if ssl:
             self._url = 'https://' + ip + '/jsonrpc'
@@ -178,13 +186,15 @@ class FortiAnalyzerJSON (object):
                                 'user': user
                     } ]
                  } ]  
-        return self.http_request('exec', params)
+        status, response = self.http_request('exec', params)
+        return status, response
+    
                             
     def logout (self):
         params = [ { 'url': 'sys/logout' } ]
-        response = self.http_request('exec', params)
+        status, response = self.http_request('exec', params)
         self._sid = None
-        return response
+        return status, response
 
     def _do (self,method,url,data={}):
         store = { 'root' : self._root,
@@ -203,14 +213,15 @@ class FortiAnalyzerJSON (object):
             params = [{ 'url' : url }]
             if data:
                 params[0]['data'] = data
-        response = self.http_request(method,params)
+        status, response = self.http_request(method,params)
         self._root = store['root']
         self._skip = store['skip']
         self._verbose = store['verbose']
-        return response
+        return status, response
 
     def do (self,method,params):
-        return self.http_request(method,params)
+        status, response = self.http_request(method,params)
+        return status, response
 
     def baredo (self, datagram):
         headers = { 'content-type' : 'application/json' }
@@ -249,55 +260,64 @@ class FortiAnalyzerJSON (object):
             params = [ data ]
         else: 
             params = [{'url' : url }]
-        return self.http_request('get',params)
-        
+        status, response = self.http_request('get',params)
+        return status, response
     
     def add (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('add',params)
+        status, response = self.http_request('add',params)
+        return status, response
     
     def update (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('update',params)
+        status, response = self.http_request('update',params)
+        return status, response
     
     def set (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('set',params)
+        status, response = self.http_request('set',params)
+        return status, response
     
     def delete (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('delete',params)
+        status, response = self.http_request('delete',params)
+        return status, response
     
     def replace (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('replace',params)
+        status, response = self.http_request('replace',params)
+        return status, response
     
     def clone (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('clone',params)
+        status, response = self.http_request('clone',params)
+        return status, response
     
     def move (self,url,data):
         data['url'] = url
         params = [ data ]
-        return self.http_request('move',params)
+        status, response = self.http_request('move',params)
+        return status, response
     
     def execute (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
             params[0]['data'] = data
-        return self.http_request('exec',params)
+        status, response = self.http_request('exec',params)
+        return status, response
+            
     
     def taskwait (self, taskid):
         url = 'task/task/'+str(taskid)

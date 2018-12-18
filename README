@@ -51,3 +51,8 @@ pip instal llxml‑4.2.1‑cp27‑cp27m‑win_amd64.whl
 8. cd ftntlib folder
 
 python setup.py install
+
+# Installing with Python 3 (3.6)
+
+* My system is MacOS with MacPort
+* 
