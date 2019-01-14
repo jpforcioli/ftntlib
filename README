@@ -7,11 +7,11 @@ Ubuntu: sudo apt install python-setuptools
 $ python -V
 Python 2.7.0
 
-2. To install with Python 2.x:
+3. To install with Python 2.x:
 
   $ sudo python setup.py install
 
-3. To install with Python 3.x:
+4. To install with Python 3.x:
 
   $ sudo python3 setup.py install
 
