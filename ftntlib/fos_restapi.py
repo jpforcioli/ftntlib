@@ -19,6 +19,7 @@ class FortiOSREST(object):
         self._https = True
         self._session = requests.session() # use single session for all requests
         self._auth_token = None
+        self.log_session_id = None
 
     def jprint(self,json_obj):
         return json.dumps(json_obj, indent=2, sort_keys=True)
@@ -106,29 +107,32 @@ class FortiOSREST(object):
         self._session.verify = False
         self.url_prefix(host)
 
-    def login(self, host, username, password, timeout=None, token=None):
+    def login(self, host, username, password, timeout=None, token=None, path='/logincheck'):
         self.url_prefix(host)
-        url = self._url_prefix + '/logincheck'
+        url = self._url_prefix + path
         res = self._session.post(url, data='username='+username+'&secretkey='+password, verify=False, timeout=timeout)
         self.dprint(res)
 
         # Update session's csrftoken
         self.update_csrf()
 
-    def logout(self):
-        url = self._url_prefix + '/logout'
+    def logout(self, path='/logout'):
+        url = self._url_prefix + path
         res = self._session.post(url)
 
         self.dprint(res)
 
+    api_get_path = '/api/v2/'
+    valid_apis = {'monitor', 'cmdb', 'log'}
+
     def get_url(self, api, path, name, action, mkey):
         # Check for valid api
-        if api not in ['monitor','cmdb']:
+        if api not in self.valid_apis:
             print ('Unknown API {0}. Ignore.'.format(api))
             return
 
         # Construct URL request, action and mkey are optional
-        url_postfix = '/api/v2/' + api + '/' + path + '/' + name
+        url_postfix = self.api_get_path + api + '/' + path + '/' + name
         if action:
             url_postfix += '/' + action
         if mkey:
@@ -163,7 +167,20 @@ class FortiOSREST(object):
         url = self._url_prefix + url_postfix
         res = self._session.get(url,params=parameters)
         self.dprint(res)        
-        return res.content    
+        return res.content
+
+    def get_log(self, path, name, action=None, mkey=None, parameters=None):
+        if not self.log_session_id:
+            content = self.get('log', path, name, action=action, mkey=mkey)
+            try:
+                data = json.loads(content)
+            except Exception as err:
+                print('Can not get session_id (%s): %s' % (err, content))
+                return content
+            self.log_session_id = int(data['session_id'])
+        parameters = parameters.copy() if parameters else {}
+        parameters.setdefault('session_id', self.log_session_id)
+        return self.get('log', path, name, action=action, mkey=mkey, parameters=parameters)
 
     def get(self, api, path, name, action=None, mkey=None, parameters=None):
         url = self.get_url(api, path, name, action, mkey)
@@ -188,3 +205,8 @@ class FortiOSREST(object):
         res = self._session.delete(url,params=parameters,data=json.dumps(data))            
         self.dprint(res)
         return res.content
+
+
+if __name__ == '__main__':
+    from .debug import main
+    exit(main(FortiOSREST))
