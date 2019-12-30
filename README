@@ -30,6 +30,8 @@ ftntlib-VERSION/README
 ftntlib-VERSION/setup.py
 $ cd ftntlib-VERSION
 $ sudo apt install python-setuptools
+# MAC
+# sudo port install py38-setuptools
 $ sudo apt install gcc
 $ sudo apt install python-dev
 $ sudo apt install libxslt1-dev

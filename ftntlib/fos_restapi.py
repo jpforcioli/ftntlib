@@ -182,9 +182,9 @@ class FortiOSREST(object):
         parameters.setdefault('session_id', self.log_session_id)
         return self.get('log', path, name, action=action, mkey=mkey, parameters=parameters)
 
-    def get(self, api, path, name, action=None, mkey=None, parameters=None):
+    def get(self, api, path, name, action=None, mkey=None, parameters=None, data=None):
         url = self.get_url(api, path, name, action, mkey)
-        res = self._session.get(url,params=parameters)
+        res = self._session.get(url,params=parameters, data=json.dumps(data))
         self.dprint(res)
         return res.content
 

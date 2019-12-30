@@ -201,8 +201,10 @@ class FortiManagerJSON (object):
                                 'passwd': passwd,
                                 'user': user
                     } ]
-                 } ]  
+                 } ]
+
         status, response = self.http_request('exec', params)
+
         return status, response
     
                             
