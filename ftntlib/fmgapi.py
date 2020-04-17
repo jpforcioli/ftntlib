@@ -33,7 +33,7 @@ class fmgapi():
 
         Parameters
         ----------
-        host : str
+        host: str
             The FortiManager IP or FQDN
         login: str
             The FortiManager administrator login
@@ -103,14 +103,14 @@ class fmgapi():
         if self._debug:
             self.debug_print(response)        
 
-    def debug(self, bool):
+    def debug(self, status):
         """
         Enable/Disable debug mode.
 
         Parameters
         ----------
 
-        bool: bool
+        status: bool
             When True, debug is enabled.
             When False, debug is disabled.
         """
@@ -120,7 +120,7 @@ class fmgapi():
         """
         Process requests.Response object to print debug messages.
         
-        Is used internally but fmgapi class methods when debug mode is
+        Is used internally by fmgapi class methods when debug mode is
         enabled.
 
         Parameters
