@@ -1,0 +1,60 @@
+1. Make sure setuptools is installed
+
+Ubuntu: sudo apt install python-setuptools
+
+2. Make sure you're running a Python version greater than 2.6
+
+$ python -V
+Python 2.7.0
+
+3. To install with Python 2.x:
+
+  $ sudo python setup.py install
+
+4. To install with Python 3.x:
+
+  $ sudo python3 setup.py install
+
+Example:
+
+# FTNTLIB Install process on a Ubuntu Desktop
+
+$ tar xzvf ftntlib-VERSION.tgz
+ftntlib-VERSION/
+ftntlib-VERSION/ftntlib/
+ftntlib-VERSION/ftntlib/__init__.py
+ftntlib-VERSION/ftntlib/fmg_jsonapi.py
+ftntlib-VERSION/ftntlib/fmg_xmlapi.py
+ftntlib-VERSION/ftntlib/fos_restapi.py
+ftntlib-VERSION/README
+ftntlib-VERSION/setup.py
+$ cd ftntlib-VERSION
+$ sudo apt install python-setuptools
+# MAC
+# sudo port install py38-setuptools
+$ sudo apt install gcc
+$ sudo apt install python-dev
+$ sudo apt install libxslt1-dev
+$ sudo apt install zlib1g-dev
+$ sudo python setup.py install
+
+WINDOWS 10 INSTALLTION
+
+1. Download Python for Windows https://www.python.org/ftp/python/2.7.14/python-2.7.14.amd64.msi
+2. Run the installer
+3. Open Windows Shell (cmd.exe)
+4. Download ftntlib and extract it somewhere
+5. Microsoft C++ Compiler 9.0 for Python is required (VCForPython27.msi)
+6. Install the compiler
+9. Get LXML and XSLT from here: https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+lxml‑4.2.1‑cp27‑cp27m‑win_amd64.whl
+pip instal llxml‑4.2.1‑cp27‑cp27m‑win_amd64.whl
+
+8. cd ftntlib folder
+
+python setup.py install
+
+# Installing with Python 3 (3.6)
+
+* My system is MacOS with MacPort
+* 

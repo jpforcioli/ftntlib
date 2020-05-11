@@ -54,7 +54,9 @@ class fmgapi():
         self._protocol = protocol
         self._port = port
 
-        self._url = f'{protocol}://{host}:{port}/jsonrpc'
+        self._url = '{}://{}:{}/jsonrpc'.format(protocol,
+                                                host,
+                                                port)
 
         jsonrpc = {
             'id': self._id,
@@ -134,7 +136,7 @@ class fmgapi():
         method = response.request.method
         url = response.request.url
         body = json.dumps(json.loads(response.request.body), indent=4)
-        print(f'{method} {url}')
+        print('{method} {url}'.format(method, url))
         print(body)
 
         print('RESPONSE:')
