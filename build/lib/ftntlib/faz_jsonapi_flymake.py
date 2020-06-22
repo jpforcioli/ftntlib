@@ -38,7 +38,6 @@ class FortiAnalyzerJSON (object):
         self._rootpath = None
         self._timeout = None
         self._apiver = 3
-        self._jsonrpc = "2.0"
   
     def jprint (self,json_obj):
         return json.dumps(json_obj, indent=2, sort_keys=True)
@@ -100,16 +99,6 @@ class FortiAnalyzerJSON (object):
     def timeout (self, timeout):
         if timeout:
             self._timeout = timeout
-
-    def apiver(self, apiver=None):
-        if apiver:
-            self._apiver = apiver
-        return self._apiver
-
-    def jsonrpc(self, jsonrpc=None):
-        if jsonrpc:
-            self._jsonrpc = jsonrpc
-        return self._jsonrpc    
             
     def workspace_mode (self, status):
         if status == 'auto':
@@ -131,7 +120,7 @@ class FortiAnalyzerJSON (object):
 
         params[0]['apiver'] = self._apiver
         datagram = { 'id' : self._reqid,
-                     'jsonrpc': self._jsonrpc,
+                     'jsonrpc': "2.0",
                      'session' : self._sid,
                      'method' : method,
                      'params' : params,
