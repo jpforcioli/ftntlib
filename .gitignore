@@ -1,2 +1,5 @@
+.DS_Store
 *.*~
 ftntlib.egg-info/
+dist/
+build/

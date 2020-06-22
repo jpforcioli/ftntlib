@@ -1,3 +1,0 @@
-requests
-suds-jurko
-lxml
