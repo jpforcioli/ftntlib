@@ -3,3 +3,4 @@
 ftntlib.egg-info/
 dist/
 build/
+ftntlib/__pycache__/
