@@ -83,7 +83,7 @@ class FmgGuiApi():
                 for cookie in response.cookies:
                     print(cookie)
 
-    def set_headers(self, response):
+    def set_headers_from_cookies(self, response):
         x_csrftoken = {
             'X-CSRFToken': self._web_session.cookies['csrftoken']
         }
@@ -97,6 +97,11 @@ class FmgGuiApi():
         #self._web_session.headers.update(x_xsrf_token)                
 
     def login(self, host, login, password, port=443):
+        '''
+        According to Mantis #0643655, we have to set Content-Type to application/json
+        '''
+        self._web_session.headers.update({'Content-Type': 'application/json'})
+
         self._host = host
         self._port = port
         self._base_url = '{}://{}:{}'.format(self._proto,
@@ -125,7 +130,7 @@ class FmgGuiApi():
         self.debug_print(response)
 
         ## Set X-CSRFToken, XSR-TOKEN and X-XSRF-TOKEN
-        self.set_headers(response)
+        self.set_headers_from_cookies(response)
 
     def flatui_proxy(self, method, params=None, json=None):
         url = '{}/cgi-bin/module/flatui_proxy'.format(self._base_url)
