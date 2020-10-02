@@ -8,7 +8,8 @@ if sys.version_info >= (2,7):
 else:
     from requests.packages.urllib3.exceptions import InsecureRequestWarning
     requests.packages.urllib3.disable_warnings()
-class FmgGuiApi():
+    
+class FmgFlatuiProxyApi():
     def __init__(self):
         self._proto = 'https'
         self._host = None

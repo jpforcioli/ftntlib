@@ -4,4 +4,4 @@ from .fmg_xmlapi import FortiManagerXML
 from .fos_restapi import FortiOSREST
 from .fpc_restapi import FortiPortalREST
 from .fap_restapi import FAPREST
-from .fmg_gui_api import FmgGuiApi
+from .fmg_flatui_proxy_api import FmgFlatuiProxyApi
