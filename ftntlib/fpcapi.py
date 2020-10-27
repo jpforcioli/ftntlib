@@ -14,7 +14,7 @@ class fpcapi:
             "Content-Type": "application/json",
         }
         self.s.headers.update(self.s.headers)
-        self.base_url = "https://{}/fpc/api"
+        self.base_url = "https://{}/fpc/v1/api"
 
     def login(self, ip, login, password):
         self.base_url = self.base_url.format(ip)
