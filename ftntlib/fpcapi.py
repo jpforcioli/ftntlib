@@ -1,4 +1,4 @@
-#! /opt/local/bin/python2.7
+#! /usr/bin/env python
 
 import requests
 import base64
@@ -6,7 +6,7 @@ import json
 import logging
 logging.captureWarnings(True)
 
-class FortiPortalREST:
+class fpcapi:
     def __init__(self):
         self._debug = False
         self.s = requests.Session()
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     login = "spuser"
     password = "test123"
 
-    fpc = FortiPortal()
+    fpc = fpcapi()
     fpc.debug('on')
     fpc.login(ip, login, password)
 
