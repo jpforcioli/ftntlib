@@ -210,14 +210,14 @@ class FmgFlatuiProxyApi:
         ## Set X-CSRFToken, XSR-TOKEN and X-XSRF-TOKEN
         self.set_headers_from_cookies(response)
 
-    def flatui_proxy(self, method, params=None, payload=None):
+    def flatui_proxy(self, method="post", params=None, payload=None):
         """
         Send a FMG GUI API request.
 
         Parameters
         ----------
         method: str
-            The method to be used (like "get", "add", etc.)
+            The HTTP method to be used (default is "post")
 
         params: dict
             The HTTP parameters.
