@@ -16,6 +16,10 @@ else:
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
+class InvalidHTTPMethod(Exception):
+    """Invalid HTTP Method."""
+
+
 class FmgFlatuiProxyApi:
     """FMG GUI API class."""
 
@@ -201,6 +205,7 @@ class FmgFlatuiProxyApi:
 
         ## This request will retrieve the CURRENT_SESSION and HTTP_CSRF_TOKEN cookies
         response = self._session.post(login_url1, json=request_body, verify=False)
+        response.raise_for_status()
         self.debug_print(response)
 
         ## This request will retrieve the XSRF-TOKEN and csrftoken cookies
@@ -230,8 +235,14 @@ class FmgFlatuiProxyApi:
 
         if method == "get":
             response = self._session.get(url, params=params)
-            self.debug_print(response)
 
         elif method == "post":
             response = self._session.post(url, params=params, json=payload)
-            self.debug_print(response)
+
+        else:
+            raise InvalidHTTPMethod('Wrong method "{}"'.format(method))
+
+        response.raise_for_status()
+        self.debug_print(response)
+
+        return response.json()
