@@ -561,10 +561,16 @@ class FortiManagerJSON (object):
         return response['data']['workspace-mode']
 
     def _workspace (self, adom, action,pkgpath=False):
-        if pkgpath:
-            url = 'pm/config/adom/'+str(adom)+'/_workspace/'+str(action)+'/'+str(pkgpath)
+        if adom == 'global':
+            base_url = 'pm/config/global'
         else:
-            url = 'pm/config/adom/'+str(adom)+'/_workspace/'+str(action)
+            base_url = 'pm/config/adom/' + str(adom)
+
+        if pkgpath:
+            url = base_url + '/_workspace/'+str(action)+'/'+str(pkgpath)
+        else:
+            url = base_url + '/_workspace/'+str(action)
+
         status, response = self._do('exec',url)
         return status, response
          
