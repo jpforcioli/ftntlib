@@ -114,8 +114,10 @@ class FmgFlatuiProxyApi:
             print(">>>")
             print("{} {}".format(method, url))
 
-            if body:
+            if type(body) == dict:
                 print("\n{}".format(json.dumps(json.loads(body), indent=4)))
+            else:
+                print("\n{}".format(body))
 
             if self._debug_header:
                 print(">>> [headers]")
@@ -246,3 +248,32 @@ class FmgFlatuiProxyApi:
         self.debug_print(response)
 
         return response.json()
+
+    def deploymng(self, action, payload, method="post"):
+        """
+        Explore the /deploymng/<action> API.
+
+        Parameters
+        ----------
+        action: str
+            The action to be performed.
+            For the moment, we know about the following actions:
+            - DeploymentPreview: trigger an install preview
+
+        payload: dict
+            The argument to be used for the mentioned action.
+
+        method: str
+            The HTTP method (default is "post").
+        """
+        url = "{}/cgi-bin/module/deploymng/{}".format(self._base_url, action)
+
+        if method == "get":
+            response = self._session.get(url, data=payload)
+        elif method == "post":
+            response = self._session.get(url, data=payload)
+        else:
+            raise InvalidHTTPMethod
+
+        response.raise_for_status()
+        self.debug_print(response)
