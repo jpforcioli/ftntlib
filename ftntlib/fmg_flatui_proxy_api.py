@@ -125,10 +125,8 @@ class FmgFlatuiProxyApi:
 
             if self._debug_header:
                 print(">>> [headers]")
-                # for header in self._session.headers:
                 for header in response.request.headers:
-                    # print("{}: {}".format(header, self._session.headers[header]))
-                    print("{}".format(response.request.headers[header]))
+                    print("{}: {}".format(header, response.request.headers[header]))
 
             if self._debug_cookie:
                 print(">>> [cookies]")
