@@ -1,4 +1,5 @@
 .DS_Store
+.venv
 *.*~
 ftntlib.egg-info/
 dist/

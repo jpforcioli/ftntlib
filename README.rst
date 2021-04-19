@@ -1,31 +1,29 @@
-Installation using ``pipenv``
-=============================
+Installation in a python virtual environment
+============================================
 
 1. Create a working directory
 
-   .. code-block:: shell
+.. code-block:: shell
 
-		   $ mkdir my_project
-		   $ cd my_project
+   mkdir my_project
 
 2. Create a virtual environment
 
-   .. code-block:: shell
+.. code-block:: shell
 
-		   $ pipenv install
+   python3 -m venv my_project/.venv
 
 3. Enter the virtual environment
 
-   .. code-block:: shell
+.. code-block:: shell
 
-		   $ pipenv shell
-
+   source my_project/.venv
 
 4. Install ``ftntlib``
 
-   .. code-block:: shell
+.. code-block:: shell
 
-		   $ git clone https://github.com/jpforcioli/ftntlib.git
-		   $ cd ftntlib
-		   $ python setup.py install
-		   
+   cd my_project
+   git clone https://github.com/jpforcioli/ftntlib.git
+   cd ftntlib
+   python3 setup.py install

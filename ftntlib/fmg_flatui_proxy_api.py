@@ -2,6 +2,7 @@
 
 """Operate the FortiManager using the FMG GUI API."""
 
+from json.decoder import JSONDecodeError
 import sys
 import logging
 import json
@@ -109,37 +110,48 @@ class FmgFlatuiProxyApi:
             # REQUEST
             method = response.request.method
             url = response.request.url
-            body = response.request.body
+            if response.request.body:
+                body = json.loads(response.request.body)
+                no_body = False
+            else:
+                no_body = True
 
-            print(">>>")
+            print(">>> [request]")
             print("{} {}".format(method, url))
 
-            if type(body) == dict:
-                print("\n{}".format(json.dumps(json.loads(body), indent=4)))
-            else:
-                print("\n{}".format(body))
+            if not no_body:
+                print(">>> [body]")
+                print("\n{}".format(json.dumps(body, indent=4)))
 
             if self._debug_header:
                 print(">>> [headers]")
-                for header in self._session.headers:
-                    print("{}: {}".format(header, self._session.headers[header]))
+                # for header in self._session.headers:
+                for header in response.request.headers:
+                    # print("{}: {}".format(header, self._session.headers[header]))
+                    print("{}".format(response.request.headers[header]))
 
             if self._debug_cookie:
                 print(">>> [cookies]")
-                for cookie in self._session.cookies:
+                # for cookie in self._session.cookies:
+                for cookie in response.request._cookies:
                     print(cookie)
 
             # RESPONSE
             status_code = response.status_code
             content_type = response.headers.get("content-type")
 
-            print("<<<")
+            print("<<< [status]")
             print("{}".format(status_code))
 
             if content_type == "application/json":
                 print("\n{}".format(json.dumps(json.loads(response.text), indent=4)))
             else:
                 print("\n{}".format(response.text))
+
+            if self._debug_header:
+                print("<<< [headers]")
+                for header in self._session.headers:
+                    print("{}: {}".format(header, self._session.headers[header]))
 
             if self._debug_cookie:
                 print("<<< [cookies]")
@@ -205,17 +217,31 @@ class FmgFlatuiProxyApi:
             },
         }
 
-        ## This request will retrieve the CURRENT_SESSION and HTTP_CSRF_TOKEN cookies
-        response = self._session.post(login_url1, json=request_body, verify=False)
-        response.raise_for_status()
-        self.debug_print(response)
+        # This request will retrieve the CURRENT_SESSION and HTTP_CSRF_TOKEN
+        # cookies. They will be conserved automatically by the requests.Session
+        # object.
+        response1 = self._session.post(login_url1, json=request_body, verify=False)
+        response1.raise_for_status()
+        self.debug_print(response1)
 
-        ## This request will retrieve the XSRF-TOKEN and csrftoken cookies
-        response = self._session.get(login_url2, verify=False)
-        self.debug_print(response)
+        # This request will retrieve the XSRF-TOKEN and csrftoken cookies.
+        response2 = self._session.get(login_url2, verify=False)
+        self.debug_print(response2)
 
         ## Set X-CSRFToken, XSR-TOKEN and X-XSRF-TOKEN
-        self.set_headers_from_cookies(response)
+        self.set_headers_from_cookies(response2)
+
+    def logout(self):
+        """
+        Logout from the FortiManager
+        """
+        # The logout URL
+        logout_url = "{}/p/logout/".format(self._base_url)
+
+        # We GET the logout
+        response = self._session.get(logout_url)
+        response.raise_for_status()
+        self.debug_print(response)
 
     def flatui_proxy(self, method="post", params=None, payload=None):
         """
@@ -277,3 +303,19 @@ class FmgFlatuiProxyApi:
 
         response.raise_for_status()
         self.debug_print(response)
+
+
+# Main
+if __name__ == "__main__":
+    ip = "10.210.35.112"
+    login = "devops"
+    password = "fortinet"
+
+    fmg = FmgFlatuiProxyApi()
+
+    fmg.debug("on")
+    fmg.debug_cookie("on")
+    fmg.debug_header("on")
+    fmg.login(ip, login, password)
+    fmg.logout()
+    fmg.debug("off")
