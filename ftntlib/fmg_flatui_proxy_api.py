@@ -166,12 +166,13 @@ class FmgFlatuiProxyApi:
             The dict returned from a FMG GUI API request
         """
         x_csrftoken = {"X-CSRFToken": self._session.cookies["csrftoken"]}
-        # self._session.headers.update(x_csrftoken)
+        self._session.headers.update(x_csrftoken)
 
         xsrf_token = {"XSRF-TOKEN": self._session.cookies["XSRF-TOKEN"]}
         self._session.headers.update(xsrf_token)
 
-        # self._session.headers.update(x_xsrf_token)
+        x_xsrf_token = {"X-XSRF-TOKEN": self._session.cookies["XSRF-TOKEN"]}
+        self._session.headers.update(x_xsrf_token)
 
     def login(self, host, login, password, port=443):
         """
@@ -226,7 +227,10 @@ class FmgFlatuiProxyApi:
         response2 = self._session.get(login_url2, verify=False)
         self.debug_print(response2)
 
-        ## Set X-CSRFToken, XSR-TOKEN and X-XSRF-TOKEN
+        # Set X-CSRFToken, XSRF-TOKEN and X-XSRF-TOKEN headers
+        # X-CSRFToken: cookie(csrftoken)
+        # XSRF-TOKEN: cookie(XSRF-TOKEN)
+        # X-XSRF-TOKEN: cookie(XSRF-TOKEN)
         self.set_headers_from_cookies(response2)
 
     def logout(self):
