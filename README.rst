@@ -17,7 +17,7 @@ Installation in a python virtual environment
 
 .. code-block:: shell
 
-   source my_project/.venv
+   source my_project/.venv/bin/activate
 
 4. Install ``ftntlib``
 
