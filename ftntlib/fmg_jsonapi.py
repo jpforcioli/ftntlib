@@ -1,12 +1,12 @@
-#!/usr/bin/env python
-###################################################################
-#
-# fmg_jsonapi.py by Ashton Turpin
-#
-# A Python module to access the FortiManager/FortiAnalyzer JSON API
-#
-###################################################################
+# coding: utf-8
 
+"""
+fmg_jsonapi.py by:
+  - Ashton Turpin
+  - Jean-Pierre Forcioli
+
+A Python module to access the FortiManager/FortiAnalyzer JSON API
+"""
 
 import time
 import logging
@@ -21,8 +21,10 @@ else:
 
     requests.packages.urllib3.disable_warnings()
 
-
 class FortiManagerJSON(object):
+    """
+    FortiManagerJSON class
+    """
     def __init__(self):
         self._reqid = 1
         self._sid = None

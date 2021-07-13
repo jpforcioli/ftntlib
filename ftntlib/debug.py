@@ -8,24 +8,27 @@
 #
 ###################################################################
 
+
 def main(cls):
     import argparse, getpass
+
     try:
         import IPython
     except ImportError:
         import pdb
+
         debug = pdb.set_trace
     else:
         debug = IPython.embed
 
-    parser = argparse.ArgumentParser(description='Test FAP REst API')
-    parser.add_argument('--username', default='admin')
-    parser.add_argument('--password')
-    parser.add_argument('ADDRESS')
+    parser = argparse.ArgumentParser(description="Test FAP REST API")
+    parser.add_argument("--username", default="admin")
+    parser.add_argument("--password")
+    parser.add_argument("ADDRESS")
     args = parser.parse_args()
 
     if args.password is None:
-        password = getpass.getpass('Enter %r password:' % args.username)
+        password = getpass.getpass("Enter %r password:" % args.username)
     else:
         password = args.password
 
