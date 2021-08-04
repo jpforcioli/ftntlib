@@ -168,7 +168,7 @@ class FmgFlatuiProxyApi:
         x_csrftoken = {"X-CSRFToken": self._session.cookies["csrftoken"]}
         self._session.headers.update(x_csrftoken)
 
-        xsrf_token = {"XSRF-TOKEN": self._session.cookies["XSRF-TOKEN"]}
+        xsrf_token = {"XSRF-TOKEN": self._session.cookies["HTTP_CSRF_TOKEN"]}
         self._session.headers.update(xsrf_token)
 
         x_xsrf_token = {"X-XSRF-TOKEN": self._session.cookies["XSRF-TOKEN"]}
@@ -204,7 +204,7 @@ class FmgFlatuiProxyApi:
         self._base_url = "{}://{}:{}".format(self._proto, self._host, self._port)
 
         login_url1 = "{}/cgi-bin/module/flatui_auth".format(self._base_url)
-        login_url2 = "{}/p/app/".format(self._base_url)
+        login_url2 = "{}/p/app/#".format(self._base_url)
 
         request_body = {
             "url": "/gui/userauth",
