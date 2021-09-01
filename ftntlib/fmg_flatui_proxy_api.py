@@ -314,7 +314,7 @@ class FmgFlatuiProxyApi:
         path: str
             path we want to get
 
-        params: list (default: None)
+        params: dict (default: None)
             URL's query string
         """
 
