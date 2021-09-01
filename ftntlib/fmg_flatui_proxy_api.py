@@ -306,6 +306,26 @@ class FmgFlatuiProxyApi:
         response.raise_for_status()
         self.debug_print(response)
 
+    def get(self, path, params=None):
+        """
+        This is to offer a HTTP GET method using the session ID and
+        headers/cookies negociated during the login stage
+
+        path: str
+            path we want to get
+
+        params: list (default: None)
+            URL's query string
+        """
+
+        url = "{}/{}".format(self._base_url, path)
+        response = self._session.get(url, params=params)
+        response.raise_for_status()
+
+        self.debug_print(response)
+
+        return response.json()
+
 
 # Main
 if __name__ == "__main__":
