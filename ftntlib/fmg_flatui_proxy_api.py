@@ -316,6 +316,8 @@ class FmgFlatuiProxyApi:
 
         params: dict (default: None)
             URL's query string
+
+        return: dict
         """
 
         url = "{}/{}".format(self._base_url, path)
