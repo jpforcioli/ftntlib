@@ -11,6 +11,7 @@
 
 import requests
 import json
+import urllib.parse
 
 
 class FortiOSREST(object):
@@ -28,7 +29,7 @@ class FortiOSREST(object):
     def dprint(self, response):
         if self._debug:
             method = response.request.method
-            url = response.request.url
+            url = urllib.parse.unquote(response.request.url)
             body = response.request.body
 
             # REQUEST
